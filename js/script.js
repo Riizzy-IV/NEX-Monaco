@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var setPeek = function (track) {
     if (!track) return;
+    if (window.innerWidth < 700) {
+      track.scrollLeft = 0;
+      return;
+    }
     var gutter = parseFloat(getComputedStyle(track).paddingLeft) || 0;
     track.scrollLeft = gutter + 170;
   };

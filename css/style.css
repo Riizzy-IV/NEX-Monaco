@@ -249,6 +249,12 @@ body {
   margin-top: var(--header-h);
 }
 
+.hero__bg picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .hero__bg-image {
   width: 100%;
   height: 100%;
@@ -1517,27 +1523,58 @@ body {
     margin-top: 4px;
   }
 
-  .hero {
-    display: flex;
-    flex-direction: column;
-    padding-top: var(--header-h);
-  }
-
   .hero__bg {
-    order: 0;
-    margin-top: 0;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: auto;
+    height: 785px;
   }
 
   .hero__bg-image {
-    object-position: 75% center;
+    object-position: center bottom;
   }
 
   .hero__content {
-    order: 1;
-    position: static;
-    height: auto;
-    padding: 40px var(--gutter) 48px;
+    justify-content: flex-start;
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+
+  .hero__metragem {
+    margin-top: auto;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .hero__metragem-size,
+  .hero__metragem-rooms {
+    color: var(--color-white);
+    text-align: center;
+  }
+
+  .hero__metragem-size {
+    margin-top: 4px;
+  }
+
+  .hero__metragem-rooms {
+    margin-top: 0;
+  }
+
+  .hero__metragem-divider {
+    width: 140px;
+    background: var(--color-white);
+  }
+
+  .hero__label {
+    color: var(--color-azul);
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  .hero__title {
+    color: var(--color-cinza-asfalto);
+  }
+
+  .hero__title-line--indent {
+    padding-left: 60px;
   }
 
   .hero__metragem {
@@ -1571,9 +1608,20 @@ body {
   }
 
   .gallery__toggle {
-    width: 100%;
-    border-radius: 8px;
+    width: calc(100% + var(--container-pad) * 2);
+    margin-inline: calc(var(--container-pad) * -1);
+    border-radius: 0;
     flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .gallery__toggle span {
+    flex: 1 1 100%;
+  }
+
+  .gallery__toggle-btn {
+    flex: 1;
+    padding: 14px 16px;
   }
 
   .plans__intro {
@@ -1598,8 +1646,13 @@ body {
   }
 
   .implantation__legend {
+    flex-direction: column;
     justify-content: flex-start;
-    gap: 32px 48px;
+    gap: 16px;
+  }
+
+  .implantation__legend-col {
+    gap: 16px;
   }
 
   .location__intro {
@@ -1629,12 +1682,14 @@ body {
   }
 
   .brand__nexus {
+    flex: none;
     width: 100%;
     max-width: 100%;
     padding-right: var(--gutter);
   }
 
   .brand__photo {
+    flex: none;
     width: 100%;
     padding-left: var(--gutter);
     padding-right: var(--gutter);
@@ -1657,16 +1712,16 @@ body {
 }
 
 @media (max-width: 600px) {
-  .hero__bg {
-    aspect-ratio: 1 / 1;
-  }
-
   .hero__title {
     font-size: 34px;
   }
 
   .hero__metragem-size {
-    font-size: 36px;
+    font-size: 44px;
+  }
+
+  .hero__metragem-rooms {
+    font-size: 24px;
   }
 
   .about {
@@ -1771,7 +1826,11 @@ body {
   }
 
   .location {
-    padding: 64px 16px 80px;
+    padding: 64px 16px 32px;
+  }
+
+  .contact {
+    padding: 32px 16px 80px;
   }
 
   .location__fichatecnica {
