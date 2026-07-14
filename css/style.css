@@ -703,13 +703,14 @@ body {
 .cta-brokers__box {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 72px;
   border: 1px solid var(--color-ouro);
   border-radius: 4px;
   padding: 24px 48px;
   flex-wrap: wrap;
-  max-width: 100%;
+  width: 100%;
+  max-width: var(--container-max);
 }
 
 .cta-brokers__text {
@@ -993,7 +994,8 @@ body {
    LOCALIZAÇÃO
    =================================================================== */
 .location {
-  background: var(--color-bg);
+  background: var(--color-bg) url('../assets/img/textura.avif') top center repeat;
+  background-size: 900px auto;
   padding: 96px var(--container-pad) 120px;
 }
 
@@ -1096,7 +1098,8 @@ body {
    CONTATO
    =================================================================== */
 .contact {
-  background: var(--color-bg);
+  background: var(--color-bg) url('../assets/img/textura.avif') top center repeat;
+  background-size: 900px auto;
   padding: 96px var(--container-pad) 120px;
 }
 
@@ -1200,28 +1203,14 @@ body {
 .brand {
   --gutter: max(24px, calc((100vw - var(--container-max)) / 2 + var(--container-pad)));
   position: relative;
-  background: var(--color-bg);
-  padding-bottom: 96px;
+  background-image: url('../assets/img/brand-bg.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 82px;
   overflow: hidden;
-}
-
-.brand::before {
-  content: '';
-  position: absolute;
-  left: -10%;
-  top: -10%;
-  width: 40%;
-  height: 130%;
-  background-image: url('../assets/img/img20X30021.png');
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: 0;
 }
 
 .brand__nexus {
@@ -1233,6 +1222,8 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 48px;
+  padding-top: 64px;
+  padding-bottom: 64px;
   padding-left: var(--gutter);
 }
 
@@ -1243,6 +1234,7 @@ body {
 }
 
 .brand__nexus-text {
+  max-width: 480px;
   font-size: 16px;
   line-height: 1.6;
   color: #111;
@@ -1257,7 +1249,8 @@ body {
 
 .brand__photo>img:first-child {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -1696,6 +1689,8 @@ body {
   }
 
   .brand__photo>img:first-child {
+    height: auto;
+    object-fit: initial;
     border-radius: 8px;
   }
 
