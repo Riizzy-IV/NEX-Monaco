@@ -196,6 +196,10 @@ body {
   flex-shrink: 0;
 }
 
+.header__nav-cta {
+  display: none;
+}
+
 .header__toggle {
   display: none;
   flex-direction: column;
@@ -1505,7 +1509,12 @@ body {
   }
 
   .header__cta {
-    margin-left: 0;
+    display: none;
+  }
+
+  .header__nav-cta {
+    display: inline-flex;
+    margin-top: 4px;
   }
 
   .hero {
