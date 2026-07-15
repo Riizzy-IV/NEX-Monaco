@@ -1608,6 +1608,15 @@ body {
     gap: 14px;
   }
 
+  .gallery__track {
+    scroll-snap-type: x mandatory;
+  }
+
+  .gallery__card {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
   .gallery__toggle span {
     flex: 1 1 100%;
   }
@@ -1776,6 +1785,16 @@ body {
 
   .cta-brokers {
     padding: 0 var(--container-pad) 64px;
+  }
+
+  .cta-brokers__box {
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .cta-brokers__text {
+    text-align: center;
   }
 
   .plans__card {
