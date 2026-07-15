@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/monaco",
+      "permanent": false
+    }
+  ]
+}
