@@ -145,10 +145,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (plansImg && plansPrev && plansNext) {
     var plans = [
-      { img: 'assets/img/planta-01.avif', finals: 'Finais - 01 | 10', size: '60,82m<sup>2</sup>' },
-      { img: 'assets/img/planta-02.avif', finals: 'Finais - 02 | 04 | 07 | 09', size: '59,98m<sup>2</sup>' },
-      { img: 'assets/img/planta-03.avif', finals: 'Finais - 03 | 08', size: '73,53m<sup>2</sup>' },
-      { img: 'assets/img/planta-04.avif', finals: 'Finais - 05 | 06', size: '60,73m<sup>2</sup>' }
+      { img: '/monaco/assets/img/planta-01.avif', finals: 'Finais - 01 | 10', size: '60,82m<sup>2</sup>' },
+      { img: '/monaco/assets/img/planta-02.avif', finals: 'Finais - 02 | 04 | 07 | 09', size: '59,98m<sup>2</sup>' },
+      { img: '/monaco/assets/img/planta-03.avif', finals: 'Finais - 03 | 08', size: '73,53m<sup>2</sup>' },
+      { img: '/monaco/assets/img/planta-04.avif', finals: 'Finais - 05 | 06', size: '60,73m<sup>2</sup>' }
     ];
     var plansIndex = 0;
 
