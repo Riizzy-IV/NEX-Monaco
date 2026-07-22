@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var contactForm = document.getElementById('contactForm');
   if (contactForm) {
-    var WEBHOOK_URL = 'https://backend-pi-three-61.vercel.app/webhook/lead/4e176fb5-d17c-4a3f-bbd0-b6dc00bd4adf';
+    var WEBHOOK_URL = 'https://hook.us1.make.com/9xr41axpck24oezqv7giv9nv7csz13dh';
 
     contactForm.addEventListener('submit', function (e) {
       e.preventDefault();
