@@ -172,10 +172,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var contactForm = document.getElementById('contactForm');
   if (contactForm) {
+    var WEBHOOK_URL = 'https://backend-pi-three-61.vercel.app/webhook/lead/4e176fb5-d17c-4a3f-bbd0-b6dc00bd4adf';
+
     contactForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      alert('Obrigado! Em breve nossa equipe entrará em contato.');
-      contactForm.reset();
+
+      var submitBtn = contactForm.querySelector('.contact__submit');
+      var originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      var payload = {
+        nome: contactForm.nome.value,
+        email: contactForm.email.value,
+        telefone: contactForm.telefone.value,
+        origem: 'Monaco Residencial - Landing Page'
+      };
+
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function () {
+          alert('Obrigado! Em breve nossa equipe entrará em contato.');
+          contactForm.reset();
+        })
+        .catch(function () {
+          alert('Não foi possível enviar seu contato agora. Tente novamente em instantes.');
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        });
     });
   }
 });

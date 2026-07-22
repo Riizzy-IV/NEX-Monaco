@@ -1056,9 +1056,9 @@ body {
   margin: 0 auto;
 }
 
-.location__map img {
+.location__map-frame {
   width: 100%;
-  height: auto;
+  aspect-ratio: 1905 / 875;
   border: 1px solid var(--color-ouro);
   border-radius: 8px;
   display: block;
