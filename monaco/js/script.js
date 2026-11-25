@@ -327,26 +327,38 @@ document.addEventListener('DOMContentLoaded', function () {
       : 'Sol baixo no horizonte';
   }
 
-  function setMin(m) { min = Math.max(dia[0], Math.min(dia[1], m)); render(); }
+  /* um desenho por quadro, no máximo: o pointermove dispara muito mais vezes que a tela atualiza */
+  var pedido = 0;
+  function setMin(m) {
+    min = Math.max(dia[0], Math.min(dia[1], m));
+    if (!pedido) pedido = requestAnimationFrame(function () { pedido = 0; render(); });
+  }
 
   function porPonteiro(e) {
     var r = bar.getBoundingClientRect();
     setMin(dia[0] + ((e.clientX - r.left) / r.width) * (dia[1] - dia[0]));
   }
   var arrastando = false;
-  bar.addEventListener('pointerdown', function (e) { arrastando = true; bar.setPointerCapture(e.pointerId); porPonteiro(e); });
+  bar.addEventListener('pointerdown', function (e) { e.preventDefault(); arrastando = true; bar.setPointerCapture(e.pointerId); porPonteiro(e); });
   bar.addEventListener('pointermove', function (e) { if (arrastando) porPonteiro(e); });
-  ['pointerup', 'pointercancel'].forEach(function (ev) { bar.addEventListener(ev, function () { arrastando = false; }); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (ev) { bar.addEventListener(ev, function () { arrastando = false; }); });
   bar.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight') { setMin(min + 15); e.preventDefault(); }
     if (e.key === 'ArrowLeft') { setMin(min - 15); e.preventDefault(); }
   });
 
-  /* arrastar a própria planta (mouse) também passa o dia, como no Touch */
+  /* arrastar a própria planta também passa o dia, como no Touch (no celular, o arraste vertical
+     continua rolando a página por causa do touch-action: pan-y) */
   var stage = root.querySelector('.sun__stage'), ini = null;
-  stage.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') { ini = { x: e.clientX, m: min }; stage.setPointerCapture(e.pointerId); } });
-  stage.addEventListener('pointermove', function (e) { if (ini) setMin(ini.m + (e.clientX - ini.x) * ((dia[1] - dia[0]) / stage.clientWidth)); });
-  ['pointerup', 'pointercancel'].forEach(function (ev) { stage.addEventListener(ev, function () { ini = null; }); });
+  stage.addEventListener('pointerdown', function (e) {
+    if (e.button > 0) return;
+    e.preventDefault();
+    ini = { x: e.clientX, m: min, w: stage.clientWidth };
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener('pointermove', function (e) { if (ini) setMin(ini.m + (e.clientX - ini.x) * ((dia[1] - dia[0]) / ini.w)); });
+  ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (ev) { stage.addEventListener(ev, function () { ini = null; }); });
+  stage.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
   root.querySelectorAll('#sunSeasons button').forEach(function (b) {
     b.addEventListener('click', function () {

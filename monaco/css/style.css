@@ -1925,16 +1925,17 @@ body {
 .sun { padding: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 320px; }
 .sun__stage { position: relative; cursor: grab; touch-action: pan-y; }
 .sun__stage:active { cursor: grabbing; }
-.sun__svg { display: block; width: 100%; height: auto; user-select: none; }
-.sun__night { fill: #1a2c58; opacity: 0; transition: opacity .3s; pointer-events: none; }
-.sun__light { mix-blend-mode: multiply; pointer-events: none; transition: opacity .3s; }
+.sun__svg { display: block; width: 100%; height: auto; user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
+.sun__svg image { pointer-events: none; }
+.sun__night { fill: #1a2c58; opacity: 0; pointer-events: none; }
+.sun__light { pointer-events: none; }
 .sun__unit { opacity: 0; transition: opacity .35s; pointer-events: none; }
 .sun__unit.is-on { opacity: 1; }
 .sun__path { fill: none; stroke: #ac8136; stroke-opacity: .55; stroke-width: 4; stroke-dasharray: 2 16; stroke-linecap: round; }
 .sun__rumo text { font: 700 30px var(--font-body); letter-spacing: 3px; fill: #ac8136; fill-opacity: .55; text-anchor: middle; dominant-baseline: middle; }
-#sunBall { pointer-events: none; transition: opacity .3s; }
+#sunBall { pointer-events: none; }
 
-.sun__panel { display: flex; flex-direction: column; gap: 18px; padding: 28px 24px; border-left: 1px solid #e4ddcf; background: #fff; font-family: var(--font-body); }
+.sun__panel { user-select: none; display: flex; flex-direction: column; gap: 18px; padding: 28px 24px; border-left: 1px solid #e4ddcf; background: #fff; font-family: var(--font-body); }
 .sun__title { font-size: 12px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase; color: var(--color-azul); }
 .sun__title span { display: block; margin-top: 4px; font-weight: 500; letter-spacing: .4px; text-transform: none; color: var(--color-cinza-claro); }
 .sun__seasons { display: flex; flex-direction: column; gap: 6px; }
