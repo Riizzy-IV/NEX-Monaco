@@ -344,7 +344,7 @@
 
   <div class="plans__card" id="plansCard">
     <div class="plans__illustration">
-      <img src="/monaco/assets/img/planta-01.avif" alt="Planta humanizada do apartamento" id="plansImg">
+      <img src="/monaco/assets/img/planta-02.avif" alt="Planta humanizada do apartamento" id="plansImg">
     </div>
 
     <div class="plans__spec">
@@ -385,6 +385,58 @@
           <img src="/monaco/assets/img/imgVector12.svg" alt="">
         </button>
       </div>
+    </div>
+  </div>
+
+  <div class="plans__floor sun" id="sunStudy">
+    <div class="sun__stage">
+      <svg class="sun__svg" viewBox="0 0 2000 1200" role="img" aria-label="Pavimento tipo com a posição do sol ao longo do dia">
+        <defs>
+          <linearGradient id="sunLight" gradientUnits="userSpaceOnUse" x1="1000" y1="0" x2="1000" y2="1200">
+            <stop offset="0" stop-color="#ffd27a" stop-opacity="0.30"/>
+            <stop offset="0.55" stop-color="#ffd27a" stop-opacity="0"/>
+            <stop offset="1" stop-color="#1a2c58" stop-opacity="0.16"/>
+          </linearGradient>
+          <radialGradient id="sunGlow">
+            <stop offset="0" stop-color="#fff7dc"/>
+            <stop offset="0.35" stop-color="#f6cf72"/>
+            <stop offset="1" stop-color="#efd19d" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="unitGlow">
+            <stop offset="0" stop-color="#ffcf6b" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#ffcf6b" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <image href="/monaco/assets/img/pavimento-tipo.webp" width="2000" height="1200"/>
+        <rect class="sun__night" width="2000" height="1200"/>
+        <rect class="sun__light" width="2000" height="1200" fill="url(#sunLight)"/>
+        <g id="sunUnits"></g>
+        <polyline class="sun__path" id="sunPath" points=""/>
+        <g id="sunRumos" class="sun__rumo"></g>
+        <g id="sunBall">
+          <circle r="120" fill="url(#sunGlow)" opacity="0.7"/>
+          <circle r="38" fill="url(#sunGlow)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="sun__panel">
+      <p class="sun__title">Orientação solar <span>· arraste para passar o dia</span></p>
+      <div class="sun__seasons" id="sunSeasons">
+        <button type="button" data-s="verao">Verão</button>
+        <button type="button" data-s="equinocio">Outono e primavera</button>
+        <button type="button" data-s="inverno" class="is-active">Inverno</button>
+      </div>
+      <div class="sun__row">
+        <svg class="sun__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M7 18a5 5 0 0 1 10 0M12 5v3M5.6 9.6l2 2M18.4 9.6l-2 2"/></svg>
+        <div class="sun__bar" id="sunBar" role="slider" tabindex="0" aria-label="Hora do dia">
+          <div class="sun__track"><div id="sunFill"></div></div>
+          <span class="sun__thumb" id="sunThumb"><span id="sunHour">09h30</span></span>
+        </div>
+        <svg class="sun__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+      </div>
+      <p class="sun__now" id="sunNow"></p>
+      <p class="sun__note">Cálculo astronômico para o terreno em Mineiros-GO, sem considerar a sombra de prédios vizinhos.</p>
     </div>
   </div>
 </section>

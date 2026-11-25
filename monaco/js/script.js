@@ -145,8 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (plansImg && plansPrev && plansNext) {
     var plans = [
-      { img: '/monaco/assets/img/planta-01.avif', finals: 'Finais - 01 | 10', size: '60,82m<sup>2</sup>' },
-      { img: '/monaco/assets/img/planta-02.avif', finals: 'Finais - 02 | 04 | 07 | 09', size: '59,98m<sup>2</sup>' },
+      { img: '/monaco/assets/img/planta-02.avif', finals: 'Finais - 01 | 10', size: '60,82m<sup>2</sup>' },
+      { img: '/monaco/assets/img/planta-01.avif', finals: 'Finais - 02 | 04 | 07 | 09', size: '59,98m<sup>2</sup>' },
       { img: '/monaco/assets/img/planta-03.avif', finals: 'Finais - 03 | 08', size: '73,53m<sup>2</sup>' },
       { img: '/monaco/assets/img/planta-04.avif', finals: 'Finais - 05 | 06', size: '60,73m<sup>2</sup>' }
     ];
@@ -208,3 +208,153 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 });
+
+/* ── Orientação solar sobre o pavimento tipo ─────────────────────────────
+   Mesma fórmula da SunCalc (usada no Touch). Terreno: Mineiros-GO.
+   Orientação da planta tirada da imagem enviada pelo cliente: poente no canto superior esquerdo e
+   nascente no inferior direito, ou seja, o topo da imagem aponta para ~315° (noroeste). CONFIRMAR. */
+(function () {
+  var root = document.getElementById('sunStudy');
+  if (!root) return;
+
+  var LAT = -17.54966, LNG = -52.55316, FUSO = -3;
+  var TOPO = 315;                      // azimute para onde aponta o topo da imagem
+  var CX = 1000, CY = 620, RX = 900, RY = 470, ALTURA = 300;
+  var RAD = Math.PI / 180;
+
+  /* centro de cada final na imagem e para onde fica a fachada externa (graus a partir do topo, horário) */
+  var UNIDADES = [
+    { n: '04', c: [426, 320], f: 315 }, { n: '05', c: [808, 472], f: 0 },   { n: '06', c: [1192, 472], f: 0 },
+    { n: '07', c: [1574, 320], f: 45 }, { n: '03', c: [308, 600], f: 270 }, { n: '08', c: [1692, 600], f: 90 },
+    { n: '02', c: [426, 880], f: 225 }, { n: '01', c: [798, 733], f: 180 }, { n: '10', c: [1202, 733], f: 180 },
+    { n: '09', c: [1574, 880], f: 135 }
+  ];
+  var ESTACOES = { verao: [2026, 12, 21], equinocio: [2026, 3, 20], inverno: [2026, 6, 21] };
+
+  function posicaoSol(data) {
+    var d = data.getTime() / 864e5 - 0.5 + 2440588 - 2451545;
+    var M = RAD * (357.5291 + 0.98560028 * d);
+    var L = M + RAD * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M)) + RAD * 102.9372 + Math.PI;
+    var ob = RAD * 23.4397;
+    var dec = Math.asin(Math.sin(ob) * Math.sin(L));
+    var ra = Math.atan2(Math.sin(L) * Math.cos(ob), Math.cos(L));
+    var phi = RAD * LAT;
+    var H = RAD * (280.16 + 360.9856235 * d) - RAD * -LNG - ra;
+    var alt = Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H));
+    var az = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi));
+    return { az: (az / RAD + 180 + 360) % 360, alt: alt / RAD };
+  }
+  function dataLocal(e, min) { return new Date(Date.UTC(e[0], e[1] - 1, e[2]) + (min - FUSO * 60) * 6e4); }
+  function nascerPor(e) {
+    var n = 0, p = 1440, antes = posicaoSol(dataLocal(e, 0)).alt;
+    for (var m = 1; m <= 1440; m++) {
+      var h = posicaoSol(dataLocal(e, m)).alt;
+      if (antes < -0.83 && h >= -0.83) n = m;
+      if (antes >= -0.83 && h < -0.83) p = m;
+      antes = h;
+    }
+    return [n, p];
+  }
+  /* azimute + altura -> ponto na imagem (cúpula vista de cima, levemente inclinada) */
+  function tela(az, alt) {
+    var d = (az - TOPO) * RAD, a = Math.max(-2, alt) * RAD, g = Math.cos(a);
+    return [CX + Math.sin(d) * RX * g, CY - Math.cos(d) * RY * g - Math.sin(a) * ALTURA];
+  }
+  function difAng(a, b) { return Math.abs(((a - b + 540) % 360) - 180); }
+  function hhmm(m) { m = Math.round(m); return String(Math.floor(m / 60)).padStart(2, '0') + 'h' + String(m % 60).padStart(2, '0'); }
+
+  var NS = 'http://www.w3.org/2000/svg';
+  var gUn = document.getElementById('sunUnits'), path = document.getElementById('sunPath');
+  var ball = document.getElementById('sunBall'), rumos = document.getElementById('sunRumos');
+  var light = root.querySelector('#sunLight'), lightRect = root.querySelector('.sun__light'), night = root.querySelector('.sun__night');
+  var bar = document.getElementById('sunBar'), fill = document.getElementById('sunFill');
+  var thumb = document.getElementById('sunThumb'), hora = document.getElementById('sunHour');
+  var now = document.getElementById('sunNow');
+
+  var glows = UNIDADES.map(function (u) {
+    var c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', u.c[0]); c.setAttribute('cy', u.c[1]); c.setAttribute('r', 190);
+    c.setAttribute('fill', 'url(#unitGlow)'); c.setAttribute('class', 'sun__unit');
+    gUn.appendChild(c); return c;
+  });
+  [['N', 0], ['L', 90], ['S', 180], ['O', 270]].forEach(function (r) {
+    var p = tela(r[1], 0), t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', Math.min(1960, Math.max(40, p[0])));
+    t.setAttribute('y', Math.min(1170, Math.max(50, p[1])));
+    t.textContent = r[0]; rumos.appendChild(t);
+  });
+
+  var est = 'inverno', dia = nascerPor(ESTACOES[est]), min = 9 * 60 + 30;
+
+  function desenhaCaminho() {
+    var pts = [];
+    for (var m = dia[0]; m <= dia[1]; m += 6) {
+      var s = posicaoSol(dataLocal(ESTACOES[est], m));
+      pts.push(tela(s.az, s.alt).map(function (v) { return v.toFixed(0); }).join(','));
+    }
+    path.setAttribute('points', pts.join(' '));
+  }
+
+  function render() {
+    var s = posicaoSol(dataLocal(ESTACOES[est], min));
+    var p = tela(s.az, s.alt), acima = s.alt > 0;
+    ball.setAttribute('transform', 'translate(' + p[0].toFixed(1) + ' ' + p[1].toFixed(1) + ')');
+    ball.style.opacity = acima ? 1 : 0;
+
+    /* luz entrando pelo lado do sol */
+    var d = (s.az - TOPO) * RAD, dx = Math.sin(d), dy = -Math.cos(d);
+    light.setAttribute('x1', CX + dx * 900); light.setAttribute('y1', 600 + dy * 900);
+    light.setAttribute('x2', CX - dx * 900); light.setAttribute('y2', 600 - dy * 900);
+    var forca = Math.max(0, Math.min(1, s.alt / 12));
+    lightRect.style.opacity = forca;
+    night.style.opacity = (1 - forca) * 0.35;
+
+    var lit = [];
+    UNIDADES.forEach(function (u, i) {
+      var on = acima && difAng(s.az, (TOPO + u.f) % 360) < 80;
+      glows[i].classList.toggle('is-on', on);
+      if (on) lit.push(u.n);
+    });
+    lit.sort();
+
+    var t = (min - dia[0]) / (dia[1] - dia[0]);
+    fill.style.width = (t * 100) + '%';
+    thumb.style.left = (t * 100) + '%';
+    hora.textContent = hhmm(min);
+    bar.setAttribute('aria-valuetext', hhmm(min));
+    now.innerHTML = acima && lit.length
+      ? 'Sol direto nos finais <b>' + lit.join(', ') + '</b> · ' + Math.round(s.alt) + '° acima do horizonte'
+      : 'Sol baixo no horizonte';
+  }
+
+  function setMin(m) { min = Math.max(dia[0], Math.min(dia[1], m)); render(); }
+
+  function porPonteiro(e) {
+    var r = bar.getBoundingClientRect();
+    setMin(dia[0] + ((e.clientX - r.left) / r.width) * (dia[1] - dia[0]));
+  }
+  var arrastando = false;
+  bar.addEventListener('pointerdown', function (e) { arrastando = true; bar.setPointerCapture(e.pointerId); porPonteiro(e); });
+  bar.addEventListener('pointermove', function (e) { if (arrastando) porPonteiro(e); });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { bar.addEventListener(ev, function () { arrastando = false; }); });
+  bar.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { setMin(min + 15); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { setMin(min - 15); e.preventDefault(); }
+  });
+
+  /* arrastar a própria planta (mouse) também passa o dia, como no Touch */
+  var stage = root.querySelector('.sun__stage'), ini = null;
+  stage.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') { ini = { x: e.clientX, m: min }; stage.setPointerCapture(e.pointerId); } });
+  stage.addEventListener('pointermove', function (e) { if (ini) setMin(ini.m + (e.clientX - ini.x) * ((dia[1] - dia[0]) / stage.clientWidth)); });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { stage.addEventListener(ev, function () { ini = null; }); });
+
+  root.querySelectorAll('#sunSeasons button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      root.querySelectorAll('#sunSeasons button').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+      est = b.dataset.s; dia = nascerPor(ESTACOES[est]);
+      desenhaCaminho(); setMin(min);
+    });
+  });
+
+  desenhaCaminho(); render();
+})();

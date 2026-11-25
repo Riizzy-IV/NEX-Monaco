@@ -776,6 +776,27 @@ body {
   padding: 40px;
 }
 
+.plans__floor {
+  max-width: var(--container-max);
+  margin: 48px auto 0;
+  background: #faf8f4;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+}
+
+.plans__floor img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 700px) {
+  .plans__floor { margin-top: 32px; padding: 8px; overflow-x: auto; }
+  .plans__floor img { min-width: 640px; }
+}
+
 .plans__illustration {
   flex: 1 1 480px;
   max-width: 560px;
@@ -1899,4 +1920,41 @@ body {
     height: 15px;
     width: 77.5px;
   }
+}
+/* ── Orientação solar (pavimento tipo) ── */
+.sun { padding: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 320px; }
+.sun__stage { position: relative; cursor: grab; touch-action: pan-y; }
+.sun__stage:active { cursor: grabbing; }
+.sun__svg { display: block; width: 100%; height: auto; user-select: none; }
+.sun__night { fill: #1a2c58; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.sun__light { mix-blend-mode: multiply; pointer-events: none; transition: opacity .3s; }
+.sun__unit { opacity: 0; transition: opacity .35s; pointer-events: none; }
+.sun__unit.is-on { opacity: 1; }
+.sun__path { fill: none; stroke: #ac8136; stroke-opacity: .55; stroke-width: 4; stroke-dasharray: 2 16; stroke-linecap: round; }
+.sun__rumo text { font: 700 30px var(--font-body); letter-spacing: 3px; fill: #ac8136; fill-opacity: .55; text-anchor: middle; dominant-baseline: middle; }
+#sunBall { pointer-events: none; transition: opacity .3s; }
+
+.sun__panel { display: flex; flex-direction: column; gap: 18px; padding: 28px 24px; border-left: 1px solid #e4ddcf; background: #fff; font-family: var(--font-body); }
+.sun__title { font-size: 12px; font-weight: 700; letter-spacing: 2.4px; text-transform: uppercase; color: var(--color-azul); }
+.sun__title span { display: block; margin-top: 4px; font-weight: 500; letter-spacing: .4px; text-transform: none; color: var(--color-cinza-claro); }
+.sun__seasons { display: flex; flex-direction: column; gap: 6px; }
+.sun__seasons button { padding: 10px 14px; border: 1px solid #e4ddcf; border-radius: 22px; background: transparent; font: 600 13px var(--font-body); color: var(--color-cinza-asfalto); cursor: pointer; transition: background .25s, color .25s, border-color .25s; }
+.sun__seasons button.is-active { background: var(--color-azul); border-color: var(--color-azul); color: #fff; }
+.sun__row { display: flex; align-items: center; gap: 12px; margin-top: 18px; }
+.sun__icon { flex: none; width: 22px; height: 22px; fill: none; stroke: var(--color-ouro); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.sun__bar { position: relative; flex: 1; height: 36px; cursor: pointer; touch-action: none; outline: none; }
+.sun__track { position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: #ece5d6; overflow: hidden; }
+.sun__track div { height: 100%; background: linear-gradient(90deg, var(--color-ouro-claro), var(--color-ouro)); }
+.sun__thumb { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--color-ouro); box-shadow: 0 0 0 5px rgba(172,129,54,.18), 0 4px 10px rgba(172,129,54,.4); }
+.sun__thumb span { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); padding: 3px 8px; border-radius: 10px; background: var(--color-azul); font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; }
+.sun__bar:focus-visible .sun__thumb { box-shadow: 0 0 0 5px rgba(26,44,88,.3); }
+.sun__now { font-size: 14px; line-height: 1.5; color: var(--color-cinza-asfalto); }
+.sun__now b { color: var(--color-azul); }
+.sun__note { margin-top: auto; font-size: 11px; line-height: 1.5; color: var(--color-cinza-claro); }
+
+@media (max-width: 1024px) {
+  .sun { grid-template-columns: 1fr; }
+  .sun__panel { border-left: 0; border-top: 1px solid #e4ddcf; }
+  .sun__seasons { flex-direction: row; flex-wrap: wrap; }
+  .sun__seasons button { flex: 1; }
 }
